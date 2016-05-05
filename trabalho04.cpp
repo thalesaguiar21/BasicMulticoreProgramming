@@ -108,39 +108,36 @@ int main(){
 		float tempof, temposum, temposin, tempolog;
 		thread tfill(fillVector, ref(v), i);
 		tfill.join();
+		/*
+			// To run for one Core and one CPU use lines 115 to 120 and
+			// comment the lines 123 to 137
 
-		string s = "sumT1_2CPU_";
-		thread t(sum, ref(v), s);
+			string s = "sumT1_2CPU_";		// This is the filename output
+			thread t1(sum, ref(v), s); 	// Change "sum" to one of the other functions
+
+			CPU_ZERO(&cpuset);
+			CPU_SET(0, &cpuset);
+			pthread_setaffinity_np(t1.native_handle(), sizeof(cpu_set_t), &cpuset);
+		*/
+
+		string s = "sumT1_2CPU_";		// This is the filename output
+		thread t1(sum, ref(v), s); 	// Change "sum" to one of the other functions
 
 		s = "sumT2_2CPU_";
-		thread tsin(sum, ref(v), s);
+		thread t2(sum, ref(v), s);
 
-		//string s = "log_";
-		//thread t(sumLog, ref(v), s);
-
-		//s = "log_";
-		//thread tsin(sumLog, ref(v), s);
-
-		//string s = "sum_";
-		//thread t(sum, ref(v), s);
-
-		//s = "sum_";
-		//thread tsin(sum, ref(v), s);
-
-		//thread tsum(sum, ref(v), s);
-		//thread tlog(sumLog, ref(v), s);
-
+		/*
+			Change the number "0" to set wich CPU you want to use
+		*/
 		CPU_ZERO(&cpuset);
 		CPU_SET(0, &cpuset);
-		pthread_setaffinity_np(tsin.native_handle(), sizeof(cpu_set_t), &cpuset);
+		pthread_setaffinity_np(t1.native_handle(), sizeof(cpu_set_t), &cpuset);
 		CPU_ZERO(&cpuset);
 		CPU_SET(1, &cpuset);
-		pthread_setaffinity_np(t.native_handle(), sizeof(cpu_set_t), &cpuset);
+		pthread_setaffinity_np(t2.native_handle(), sizeof(cpu_set_t), &cpuset);
 
-		//tsum.join();
-		tsin.join();
-		//tlog.join();
-		t.join();
+		t1.join();
+		t2.join();
 	}
 
 	return 0;
